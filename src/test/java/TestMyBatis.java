@@ -17,8 +17,13 @@ public class TestMyBatis {
         UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
 
         // 4.执行MapperProxy的invoke方法
+        System.out.println(">>>第一次查询");
         UserEntity userEntity = userMapper.getUser(1L);
         System.out.println(userEntity.toString());
+
+        System.out.println(">>>第二次查询");
+        UserEntity userEntity2 = userMapper.getUser(1L);
+        System.out.println(userEntity2.toString());
 
     }
 }

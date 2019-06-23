@@ -1,5 +1,7 @@
 package com.liuwq.session;
 
+import com.liuwq.executor.BaseExecutor;
+
 /**
  * @description:
  * @author: liuwq
@@ -20,8 +22,9 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     }
 
     private SqlSession openSessionFromDataSource() {
+        BaseExecutor executor = configuration.newExecutor();
         // 只用默认的sqlSqlSession
-        return new DefaultSqlSession(configuration);
+        return new DefaultSqlSession(configuration, executor);
     }
 
 }

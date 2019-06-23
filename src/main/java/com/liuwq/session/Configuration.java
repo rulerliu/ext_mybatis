@@ -1,7 +1,10 @@
 package com.liuwq.session;
 
 import com.liuwq.exception.BindingException;
+import com.liuwq.executor.BaseExecutor;
+import com.liuwq.executor.SimpleExecutor;
 import com.liuwq.proxy.MapperProxyFactory;
+import com.liuwq.statement.MappedStatement;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +20,16 @@ public class Configuration {
     private DataSource dataSource;
     private String mappers;
     private final Map<Class<?>, MapperProxyFactory<?>> knownMappers = new HashMap<Class<?>, MapperProxyFactory<?>>();
+    private final Map<String, MappedStatement> mappedStatements = new HashMap<>();
+    private Boolean cacheEnabled = true;
+
+    public BaseExecutor newExecutor() {
+        BaseExecutor executor = new SimpleExecutor(this);
+//        if (cacheEnabled) {
+//            executor = new CachingExecutor(executor);
+//        }
+        return executor;
+    }
 
     public <T> void addMapper(Class<T> type) {
         if (type.isInterface()) {
@@ -41,6 +54,14 @@ public class Configuration {
         } catch (Exception e) {
             throw new BindingException("Error getting mapper instance. Cause: " + e, e);
         }
+    }
+
+    public void addMappedStatement(MappedStatement ms) {
+        mappedStatements.put(ms.getId(), ms);
+    }
+
+    public MappedStatement getMappedStatement(String id) {
+        return mappedStatements.get(id);
     }
 
     public DataSource getDataSource() {

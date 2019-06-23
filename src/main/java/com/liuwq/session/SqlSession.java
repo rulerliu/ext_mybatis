@@ -1,5 +1,9 @@
 package com.liuwq.session;
 
+import com.liuwq.statement.MappedStatement;
+
+import java.util.List;
+
 /**
  * @description:
  * @author: liuwq
@@ -9,4 +13,9 @@ package com.liuwq.session;
 public interface SqlSession  {
 
     <T> T getMapper(Class<T> type);
+
+    <T> T selectOne(MappedStatement ms, Object parameter);
+
+    <E> List<E> selectList(MappedStatement ms, Object parameter);
+
 }

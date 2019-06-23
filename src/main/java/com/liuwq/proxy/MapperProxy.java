@@ -1,7 +1,8 @@
 package com.liuwq.proxy;
 
-import com.liuwq.entity.UserEntity;
+import com.liuwq.annotation.Select;
 import com.liuwq.session.SqlSession;
+import com.liuwq.statement.MappedStatement;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -16,8 +17,15 @@ public class MapperProxy<T> implements InvocationHandler {
         this.mapperInterface = mapperInterface;
     }
 
-    public Object invoke(Object proxy, Method method, Object[] args) {
-        // 先写死来
-        return new UserEntity(1L, "liuwq", 22);
+    @Override
+    public Object invoke(Object proxy, Method method, Object[] args) throws Exception {
+        if (method.getDeclaredAnnotation(Select.class) != null) {
+
+            MappedStatement.Builder builder = new MappedStatement.Builder(mapperInterface.getName() + "." + method.getName(), method.getDeclaredAnnotation(Select.class), method.getReturnType(), args);
+            MappedStatement ms = builder.build();
+            return sqlSession.selectOne(ms, args);
+        } else {
+            throw new Exception("方法上面无注解");
+        }
     }
 }
